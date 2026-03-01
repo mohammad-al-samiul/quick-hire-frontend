@@ -4,27 +4,26 @@ import Intel from "@/assets/intel-3.png";
 import Tesla from "@/assets/tesla-9 1.png";
 import Amd from "@/assets/amd-logo-1.png";
 import Talkit from "@/assets/talkit 1.png";
+
 export default function Companies() {
+  const textStyle = { fontFamily: "Clash Display", fontWeight: 600 };
+
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto max-w-1440px px-6">
-        <div className="text-center mb-12">
-          <h2
-            className="text-3xl font-bold text-gray-900 mb-4"
-            style={{ fontFamily: "Clash Display", fontWeight: 600 }}
-          >
-            Top Companies
-          </h2>
-          <p
-            className="text-gray-600"
-            style={{ fontFamily: "Clash Display", fontWeight: 600 }}
-          >
-            Join the best companies in the world
+    // Responsive padding: px-6 for mobile, px-32 for desktop
+    <section className="px-6 lg:px-32 py-10 bg-gray-50">
+      <div className="container mx-auto max-w-[1440px]">
+        <div className="mb-10 text-center lg:text-left">
+          <p className="text-gray-500" style={textStyle}>
+            Companies we helped grow
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-8 items-center justify-between">
-          <div className="relative w-38.25 h-10">
+        {/* Using a grid for mobile (2 columns) and flex for desktop. 
+            This ensures logos stay aligned and don't overflow the screen.
+        */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap gap-8 md:gap-12 items-center justify-items-center lg:justify-between opacity-60 grayscale hover:grayscale-0 transition-all">
+          {/* Vodafone */}
+          <div className="relative w-32 md:w-40 h-10">
             <Image
               src={Vodafone}
               alt="Vodafone logo"
@@ -33,7 +32,8 @@ export default function Companies() {
             />
           </div>
 
-          <div className="relative w-20.5 h-8">
+          {/* Intel */}
+          <div className="relative w-20 md:w-24 h-8">
             <Image
               src={Intel}
               alt="Intel logo"
@@ -42,7 +42,8 @@ export default function Companies() {
             />
           </div>
 
-          <div className="relative w-45.5 h-6">
+          {/* Tesla */}
+          <div className="relative w-36 md:w-44 h-6">
             <Image
               src={Tesla}
               alt="Tesla logo"
@@ -51,11 +52,13 @@ export default function Companies() {
             />
           </div>
 
-          <div className="relative w-29 h-7">
+          {/* AMD */}
+          <div className="relative w-24 md:w-32 h-7">
             <Image src={Amd} alt="AMD logo" fill className="object-contain" />
           </div>
 
-          <div className="relative w-27 h-8">
+          {/* Talkit */}
+          <div className="relative w-24 md:w-28 h-8">
             <Image
               src={Talkit}
               alt="Talkit logo"
