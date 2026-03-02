@@ -2,12 +2,10 @@ import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import Companies from "@/components/Companies";
 import Testimonials from "@/components/Testimonials";
-import JobListings from "@/components/JobListings";
-import Newsletter from "@/components/Newsletter";
-import Footer from "@/components/Footer";
 import JobDashboard from "@/components/JobDashboard";
-import FeaturedJobs from "@/components/FeatureJobs";
-import LatestJobsSection from "@/components/LatestJob";
+import JobListings from "@/components/JobListings";
+
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -17,8 +15,8 @@ export default function Home() {
       <Companies />
       <Testimonials />
       <JobDashboard />
-      <FeaturedJobs />
-      <LatestJobsSection />
+      <JobListings />
+
       <Footer />
     </div>
   );

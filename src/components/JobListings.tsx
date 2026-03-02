@@ -1,7 +1,32 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { apiService, Job } from "@/services/api";
+import { MapPin, Briefcase, Clock, ExternalLink } from "lucide-react";
+
 export default function JobListings() {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+      const jobsData = await apiService.getJobs();
+      setJobs(jobsData);
+    } catch (error) {
+      console.error("Failed to fetch jobs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="py-20 bg-gray-50">
-      <div className="container mx-auto max-w-1440px px-6">
+      <div className="container mx-auto max-w-[1440px] px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Featured Jobs
@@ -10,190 +35,133 @@ export default function JobListings() {
         </div>
 
         <div className="grid lg:grid-cols-4 gap-8">
-          {/* Filters Sidebar */}
+          {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-4">Filters</h3>
-
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-700 mb-3">Job Type</h4>
-                <div className="space-y-2">
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-gray-600">Full Time</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-gray-600">Part Time</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-gray-600">Remote</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-700 mb-3">Experience</h4>
-                <div className="space-y-2">
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-gray-600">Entry Level</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-gray-600">Mid Level</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-gray-600">Senior Level</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-700 mb-3">Salary Range</h4>
-                <select className="w-full p-2 border border-gray-200 rounded-lg text-gray-600">
-                  <option>$0 - $50k</option>
-                  <option>$50k - $100k</option>
-                  <option>$100k - $150k</option>
-                  <option>$150k+</option>
-                </select>
-              </div>
+              <p className="text-sm text-gray-500">
+                (Filter UI ready – backend filter logic not connected yet)
+              </p>
             </div>
           </div>
 
           {/* Job Cards */}
           <div className="lg:col-span-3">
-            <div className="space-y-4">
-              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">
-                      Senior Frontend Developer
-                    </h3>
-                    <p className="text-gray-600">Google</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-blue-600 font-semibold">
-                      $120k - $180k
-                    </div>
-                    <div className="text-gray-500 text-sm">
-                      San Francisco, CA
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  We are looking for an experienced frontend developer to join
-                  our team...
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    React
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    TypeScript
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    Node.js
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">
-                    Posted 2 days ago
-                  </span>
-                  <button className="text-blue-600 font-medium hover:text-blue-700">
-                    Apply Now
-                  </button>
-                </div>
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p className="mt-4 text-gray-600">Loading jobs...</p>
               </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">
-                      Product Designer
-                    </h3>
-                    <p className="text-gray-600">Meta</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-blue-600 font-semibold">
-                      $100k - $150k
-                    </div>
-                    <div className="text-gray-500 text-sm">Remote</div>
-                  </div>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  Join our design team to create amazing user experiences for
-                  billions of users...
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    Figma
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    UI/UX
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    Prototyping
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">
-                    Posted 1 week ago
-                  </span>
-                  <button className="text-blue-600 font-medium hover:text-blue-700">
-                    Apply Now
-                  </button>
-                </div>
+            ) : jobs.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                No jobs found.
               </div>
+            ) : (
+              <div className="space-y-4">
+                {jobs.map((job) => {
+                  const requirements = job.requirements ?? [];
+                  const displayDate = new Date(
+                    job.postedAt ?? job.createdAt,
+                  ).toLocaleDateString();
 
-              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">
-                      Backend Engineer
-                    </h3>
-                    <p className="text-gray-600">Amazon</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-blue-600 font-semibold">
-                      $130k - $190k
+                  return (
+                    <div
+                      key={job._id}
+                      className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      {/* Header */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-lg mb-2">
+                            {job.title}
+                          </h3>
+                          <p className="text-gray-600">{job.company}</p>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="text-blue-600 font-semibold">
+                            {job.salary ?? "Negotiable"}
+                          </div>
+                          <div className="text-gray-500 text-sm">
+                            {job.location}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-gray-600 mb-4 line-clamp-2">
+                        {job.description}
+                      </p>
+
+                      {/* Requirements */}
+                      {requirements.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {requirements.slice(0, 3).map((req, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm"
+                            >
+                              {req}
+                            </span>
+                          ))}
+
+                          {requirements.length > 3 && (
+                            <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
+                              +{requirements.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Footer */}
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            <span>{job.location}</span>
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            <Briefcase className="w-4 h-4" />
+                            <span>{job.type ?? "Full Time"}</span>
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{displayDate}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() =>
+                              (window.location.href = `/jobs/${job._id}`)
+                            }
+                            className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
+                          >
+                            View Details
+                          </button>
+
+                          <button className="flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                            <ExternalLink className="w-4 h-4" />
+                            <span>Apply Now</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-gray-500 text-sm">Seattle, WA</div>
-                  </div>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  Build scalable backend systems that power millions of
-                  customers worldwide...
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    Python
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    AWS
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    Docker
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">
-                    Posted 3 days ago
-                  </span>
-                  <button className="text-blue-600 font-medium hover:text-blue-700">
-                    Apply Now
-                  </button>
-                </div>
+                  );
+                })}
               </div>
-            </div>
+            )}
 
-            <div className="text-center mt-8">
-              <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-                Load More Jobs
-              </button>
-            </div>
+            {/* Load More */}
+            {!loading && jobs.length > 0 && (
+              <div className="text-center mt-8">
+                <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                  Load More Jobs
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
