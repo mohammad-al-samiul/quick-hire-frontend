@@ -24,11 +24,9 @@ export interface Job {
   category: string;
   description: string;
 
-  // Optional (future safe)
   type?: string;
   salary?: string;
   requirements?: string[];
-  postedAt?: string;
 
   createdAt: string;
   updatedAt: string;
@@ -41,11 +39,11 @@ export interface Job {
 
 export interface Application {
   _id: string;
-  job_id: string; // 👈 backend uses job_id
+  job_id: string;
   name: string;
   email: string;
-  resume_link: string; // 👈 backend uses resume_link
-  cover_note: string; // 👈 backend uses cover_note
+  resume_link: string;
+  cover_note: string;
   createdAt: string;
 }
 
@@ -89,7 +87,7 @@ class ApiService {
   // Get all jobs
   async getJobs(): Promise<Job[]> {
     const res = await this.request<Job[]>("/api/jobs");
-    return res.data; // ✅ fixed
+    return res.data;
   }
 
   // Get single job
@@ -100,7 +98,7 @@ class ApiService {
 
   // Create job
   async createJob(
-    jobData: Omit<Job, "_id" | "postedAt" | "createdAt" | "updatedAt" | "__v">,
+    jobData: Omit<Job, "_id" | "createdAt" | "updatedAt" | "__v">,
   ): Promise<Job> {
     const res = await this.request<Job>("/api/jobs", {
       method: "POST",

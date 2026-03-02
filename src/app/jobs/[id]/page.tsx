@@ -1,9 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { apiService, Job, Application } from '@/services/api';
-import { MapPin, Briefcase, DollarSign, Clock, ArrowLeft, Send, User, Mail, FileText, MessageSquare } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { apiService, Job, Application } from "@/services/api";
+import {
+  MapPin,
+  Briefcase,
+  DollarSign,
+  Clock,
+  ArrowLeft,
+  Send,
+  User,
+  Mail,
+  FileText,
+  MessageSquare,
+} from "lucide-react";
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -15,10 +26,10 @@ export default function JobDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    resume_link: '',
-    cover_note: ''
+    name: "",
+    email: "",
+    resume_link: "",
+    cover_note: "",
   });
 
   useEffect(() => {
@@ -33,24 +44,31 @@ export default function JobDetailPage() {
       const jobData = await apiService.getJob(jobId);
       setJob(jobData);
     } catch (error) {
-      console.error('Failed to fetch job:', error);
+      console.error("Failed to fetch job:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.resume_link || !formData.cover_note) {
-      alert('Please fill in all fields');
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.resume_link ||
+      !formData.cover_note
+    ) {
+      alert("Please fill in all fields");
       return;
     }
 
@@ -58,15 +76,15 @@ export default function JobDetailPage() {
       setSubmitting(true);
       await apiService.submitApplication({
         job_id: jobId,
-        ...formData
+        ...formData,
       });
-      
-      alert('Application submitted successfully!');
-      setFormData({ name: '', email: '', resume_link: '', cover_note: '' });
+
+      alert("Application submitted successfully!");
+      setFormData({ name: "", email: "", resume_link: "", cover_note: "" });
       setShowApplicationForm(false);
     } catch (error) {
-      console.error('Failed to submit application:', error);
-      alert('Failed to submit application. Please try again.');
+      console.error("Failed to submit application:", error);
+      alert("Failed to submit application. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -89,7 +107,7 @@ export default function JobDetailPage() {
         <div className="text-center">
           <p className="text-gray-600 mb-4">Job not found</p>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             className="text-blue-600 hover:text-blue-700"
           >
             Back to Jobs
@@ -100,7 +118,7 @@ export default function JobDetailPage() {
   }
 
   const requirements = job.requirements || [];
-  const displayDate = new Date(job.postedAt || job.createdAt).toLocaleDateString();
+  const displayDate = new Date(job.createdAt).toLocaleDateString();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,7 +126,7 @@ export default function JobDetailPage() {
       <div className="bg-white border-b">
         <div className="container mx-auto max-w-[1440px] px-6 py-4">
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -128,12 +146,10 @@ export default function JobDetailPage() {
                   <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
                     {job.title}
                   </h1>
-                  <p className="text-xl text-gray-600">
-                    {job.company}
-                  </p>
+                  <p className="text-xl text-gray-600">{job.company}</p>
                 </div>
                 <span className="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium">
-                  {job.type || 'Full-time'}
+                  {job.type || "Full-time"}
                 </span>
               </div>
 
@@ -148,7 +164,7 @@ export default function JobDetailPage() {
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <DollarSign className="w-4 h-4" />
-                  <span>{job.salary || 'Competitive'}</span>
+                  <span>{job.salary || "Competitive"}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <Clock className="w-4 h-4" />
@@ -179,14 +195,14 @@ export default function JobDetailPage() {
                   {requirements.map((requirement, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 shrink-0"></div>
-                      <span className="text-gray-600">
-                        {requirement}
-                      </span>
+                      <span className="text-gray-600">{requirement}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-600">No specific requirements listed.</p>
+                <p className="text-gray-600">
+                  No specific requirements listed.
+                </p>
               )}
             </div>
 
@@ -211,27 +227,19 @@ export default function JobDetailPage() {
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Company Name</p>
-                  <p className="text-gray-900">
-                    {job.company}
-                  </p>
+                  <p className="text-gray-900">{job.company}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Location</p>
-                  <p className="text-gray-900">
-                    {job.location}
-                  </p>
+                  <p className="text-gray-900">{job.location}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Job Type</p>
-                  <p className="text-gray-900">
-                    {job.type || 'Full-time'}
-                  </p>
+                  <p className="text-gray-900">{job.type || "Full-time"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Category</p>
-                  <p className="text-gray-900">
-                    {job.category}
-                  </p>
+                  <p className="text-gray-900">{job.category}</p>
                 </div>
               </div>
             </div>
@@ -242,7 +250,8 @@ export default function JobDetailPage() {
                 Quick Apply
               </h3>
               <p className="text-gray-600 mb-4 text-sm">
-                Ready to apply? Click the button below to fill out the application form.
+                Ready to apply? Click the button below to fill out the
+                application form.
               </p>
               <button
                 onClick={() => setShowApplicationForm(true)}

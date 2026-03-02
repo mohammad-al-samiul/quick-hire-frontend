@@ -61,7 +61,7 @@ export default function JobListings() {
                 {jobs.map((job) => {
                   const requirements = job.requirements ?? [];
                   const displayDate = new Date(
-                    job.postedAt ?? job.createdAt,
+                    job.createdAt,
                   ).toLocaleDateString();
 
                   return (

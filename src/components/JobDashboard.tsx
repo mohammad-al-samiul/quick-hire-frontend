@@ -306,8 +306,8 @@ function JobCard({ job }: { job: Job }) {
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
               <span>
-                {job.postedAt
-                  ? new Date(job.postedAt).toLocaleDateString()
+                {job.createdAt
+                  ? new Date(job.createdAt).toLocaleDateString()
                   : new Date().toLocaleDateString()}
               </span>
             </div>

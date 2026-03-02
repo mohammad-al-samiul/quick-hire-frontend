@@ -1,8 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { apiService, Job } from '@/services/api';
-import { Plus, Trash2, Edit, Briefcase, MapPin, DollarSign, Calendar, Search, X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { apiService, Job } from "@/services/api";
+import {
+  Plus,
+  Trash2,
+  Edit,
+  Briefcase,
+  MapPin,
+  DollarSign,
+  Calendar,
+  Search,
+  X,
+} from "lucide-react";
 
 interface NewJob {
   title: string;
@@ -19,21 +29,35 @@ export default function AdminView() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [newJob, setNewJob] = useState<NewJob>({
-    title: '',
-    company: '',
-    location: '',
-    type: 'Full-time',
-    category: 'Engineering',
-    salary: '',
-    description: '',
-    requirements: ['']
+    title: "",
+    company: "",
+    location: "",
+    type: "Full-time",
+    category: "Engineering",
+    salary: "",
+    description: "",
+    requirements: [""],
   });
 
-  const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'];
-  const categories = ['Engineering', 'Design', 'Marketing', 'Sales', 'Product', 'HR', 'Finance'];
+  const jobTypes = [
+    "Full-time",
+    "Part-time",
+    "Contract",
+    "Internship",
+    "Remote",
+  ];
+  const categories = [
+    "Engineering",
+    "Design",
+    "Marketing",
+    "Sales",
+    "Product",
+    "HR",
+    "Finance",
+  ];
 
   useEffect(() => {
     fetchJobs();
@@ -45,7 +69,7 @@ export default function AdminView() {
       const jobsData = await apiService.getJobs();
       setJobs(jobsData);
     } catch (error) {
-      console.error('Failed to fetch jobs:', error);
+      console.error("Failed to fetch jobs:", error);
     } finally {
       setLoading(false);
     }
@@ -53,9 +77,14 @@ export default function AdminView() {
 
   const handleAddJob = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!newJob.title || !newJob.company || !newJob.location || !newJob.description) {
-      alert('Please fill in all required fields');
+
+    if (
+      !newJob.title ||
+      !newJob.company ||
+      !newJob.location ||
+      !newJob.description
+    ) {
+      alert("Please fill in all required fields");
       return;
     }
 
@@ -63,86 +92,93 @@ export default function AdminView() {
       setSubmitting(true);
       const jobData = {
         ...newJob,
-        requirements: newJob.requirements.filter(req => req.trim() !== ''),
-        postedAt: new Date().toISOString()
+        requirements: newJob.requirements.filter((req) => req.trim() !== ""),
+        postedAt: new Date().toISOString(),
       };
-      
+
       await apiService.createJob(jobData);
       await fetchJobs();
-      
+
       setNewJob({
-        title: '',
-        company: '',
-        location: '',
-        type: 'Full-time',
-        category: 'Engineering',
-        salary: '',
-        description: '',
-        requirements: ['']
+        title: "",
+        company: "",
+        location: "",
+        type: "Full-time",
+        category: "Engineering",
+        salary: "",
+        description: "",
+        requirements: [""],
       });
       setShowAddForm(false);
-      
-      alert('Job posted successfully!');
+
+      alert("Job posted successfully!");
     } catch (error) {
-      console.error('Failed to create job:', error);
-      alert('Failed to post job. Please try again.');
+      console.error("Failed to create job:", error);
+      alert("Failed to post job. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDeleteJob = async (jobId: string) => {
-    if (!confirm('Are you sure you want to delete this job?')) {
+    if (!confirm("Are you sure you want to delete this job?")) {
       return;
     }
 
     try {
       await apiService.deleteJob(jobId);
-      setJobs(jobs.filter(job => job._id !== jobId));
-      alert('Job deleted successfully!');
+      setJobs(jobs.filter((job) => job._id !== jobId));
+      alert("Job deleted successfully!");
     } catch (error) {
-      console.error('Failed to delete job:', error);
-      alert('Failed to delete job. Please try again.');
+      console.error("Failed to delete job:", error);
+      alert("Failed to delete job. Please try again.");
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setNewJob(prev => ({
+    setNewJob((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleRequirementChange = (index: number, value: string) => {
     const updatedRequirements = [...newJob.requirements];
     updatedRequirements[index] = value;
-    setNewJob(prev => ({
+    setNewJob((prev) => ({
       ...prev,
-      requirements: updatedRequirements
+      requirements: updatedRequirements,
     }));
   };
 
   const addRequirement = () => {
-    setNewJob(prev => ({
+    setNewJob((prev) => ({
       ...prev,
-      requirements: [...prev.requirements, '']
+      requirements: [...prev.requirements, ""],
     }));
   };
 
   const removeRequirement = (index: number) => {
     if (newJob.requirements.length > 1) {
-      const updatedRequirements = newJob.requirements.filter((_, i) => i !== index);
-      setNewJob(prev => ({
+      const updatedRequirements = newJob.requirements.filter(
+        (_, i) => i !== index,
+      );
+      setNewJob((prev) => ({
         ...prev,
-        requirements: updatedRequirements
+        requirements: updatedRequirements,
       }));
     }
   };
 
-  const filteredJobs = jobs.filter(job =>
-    job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    job.company.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredJobs = jobs.filter(
+    (job) =>
+      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.company.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -190,9 +226,7 @@ export default function AdminView() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  Total Jobs
-                </p>
+                <p className="text-sm text-gray-600 mb-1">Total Jobs</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {jobs.length}
                 </p>
@@ -203,9 +237,7 @@ export default function AdminView() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  Active Jobs
-                </p>
+                <p className="text-sm text-gray-600 mb-1">Active Jobs</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {jobs.length}
                 </p>
@@ -216,12 +248,8 @@ export default function AdminView() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  Total Applications
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  0
-                </p>
+                <p className="text-sm text-gray-600 mb-1">Total Applications</p>
+                <p className="text-2xl font-bold text-gray-900">0</p>
               </div>
               <Edit className="w-8 h-8 text-purple-600" />
             </div>
@@ -229,12 +257,8 @@ export default function AdminView() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  Conversion Rate
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  0%
-                </p>
+                <p className="text-sm text-gray-600 mb-1">Conversion Rate</p>
+                <p className="text-2xl font-bold text-gray-900">0%</p>
               </div>
               <DollarSign className="w-8 h-8 text-orange-600" />
             </div>
@@ -245,15 +269,11 @@ export default function AdminView() {
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">
-              Loading jobs...
-            </p>
+            <p className="mt-4 text-gray-600">Loading jobs...</p>
           </div>
         ) : filteredJobs.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">
-              No jobs found.
-            </p>
+            <p className="text-gray-600">No jobs found.</p>
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -289,13 +309,13 @@ export default function AdminView() {
                           <p className="text-sm font-medium text-gray-900">
                             {job.title}
                           </p>
-                          <p className="text-sm text-gray-500">{job.category}</p>
+                          <p className="text-sm text-gray-500">
+                            {job.category}
+                          </p>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <p className="text-sm text-gray-900">
-                          {job.company}
-                        </p>
+                        <p className="text-sm text-gray-900">{job.company}</p>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-1">
@@ -307,12 +327,12 @@ export default function AdminView() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">
-                          {job.type || 'Full-time'}
+                          {job.type || "Full-time"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <p className="text-sm text-gray-500">
-                          {new Date(job.postedAt || job.createdAt).toLocaleDateString()}
+                          {new Date(job.createdAt).toLocaleDateString()}
                         </p>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -429,8 +449,10 @@ export default function AdminView() {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      {jobTypes.map(type => (
-                        <option key={type} value={type}>{type}</option>
+                      {jobTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -445,8 +467,10 @@ export default function AdminView() {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      {categories.map(category => (
-                        <option key={category} value={category}>{category}</option>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -476,7 +500,9 @@ export default function AdminView() {
                       <input
                         type="text"
                         value={requirement}
-                        onChange={(e) => handleRequirementChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleRequirementChange(index, e.target.value)
+                        }
                         className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="e.g., 5+ years of experience with React"
                       />
@@ -513,7 +539,7 @@ export default function AdminView() {
                     disabled={submitting}
                     className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {submitting ? 'Posting...' : 'Post Job'}
+                    {submitting ? "Posting..." : "Post Job"}
                   </button>
                 </div>
               </form>

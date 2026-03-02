@@ -1,9 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { apiService, Job, Application } from '@/services/api';
-import { MapPin, Briefcase, DollarSign, Clock, ArrowLeft, Send, User, Mail, FileText, MessageSquare } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { apiService, Job } from "@/services/api";
+import {
+  MapPin,
+  Briefcase,
+  DollarSign,
+  Clock,
+  ArrowLeft,
+  Send,
+  User,
+  Mail,
+  FileText,
+  MessageSquare,
+} from "lucide-react";
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -15,10 +26,10 @@ export default function JobDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    resumeUrl: '',
-    coverNote: ''
+    name: "",
+    email: "",
+    resumeUrl: "",
+    coverNote: "",
   });
 
   useEffect(() => {
@@ -33,51 +44,63 @@ export default function JobDetailPage() {
       const jobData = await apiService.getJob(jobId);
       setJob(jobData);
     } catch (error) {
-      console.error('Failed to fetch job:', error);
+      console.error("Failed to fetch job:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.resumeUrl || !formData.coverNote) {
-      alert('Please fill in all fields');
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.resumeUrl ||
+      !formData.coverNote
+    ) {
+      alert("Please fill in all fields");
       return;
     }
 
     try {
       setSubmitting(true);
+
       await apiService.submitApplication({
-        jobId,
-        ...formData
+        job_id: jobId,
+        name: formData.name,
+        email: formData.email,
+        resume_link: formData.resumeUrl,
+        cover_note: formData.coverNote,
       });
-      
-      alert('Application submitted successfully!');
-      setFormData({ name: '', email: '', resumeUrl: '', coverNote: '' });
+      alert("Application submitted successfully!");
+      setFormData({ name: "", email: "", resumeUrl: "", coverNote: "" });
       setShowApplicationForm(false);
     } catch (error) {
-      console.error('Failed to submit application:', error);
-      alert('Failed to submit application. Please try again.');
+      console.error("Failed to submit application:", error);
+      alert("Failed to submit application.");
     } finally {
       setSubmitting(false);
     }
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+          <p
+            className="mt-4 text-gray-600"
+            style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+          >
             Loading job details...
           </p>
         </div>
@@ -89,13 +112,16 @@ export default function JobDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600 mb-4" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+          <p
+            className="text-gray-600 mb-4"
+            style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+          >
             Job not found
           </p>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             className="text-blue-600 hover:text-blue-700"
-            style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+            style={{ fontFamily: "Clash Display", fontWeight: 600 }}
           >
             Back to Jobs
           </button>
@@ -110,9 +136,9 @@ export default function JobDetailPage() {
       <div className="bg-white border-b">
         <div className="container mx-auto max-w-1440px px-6 py-4">
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+            style={{ fontFamily: "Clash Display", fontWeight: 600 }}
           >
             <ArrowLeft className="w-5 h-5" />
             Back to Jobs
@@ -128,10 +154,16 @@ export default function JobDetailPage() {
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                 <div>
-                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <h1
+                    className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     {job.title}
                   </h1>
-                  <p className="text-xl text-gray-600" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <p
+                    className="text-xl text-gray-600"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     {job.company}
                   </p>
                 </div>
@@ -143,20 +175,34 @@ export default function JobDetailPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                 <div className="flex items-center gap-2 text-gray-600">
                   <MapPin className="w-4 h-4" />
-                  <span style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>{job.location}</span>
+                  <span
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
+                    {job.location}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <Briefcase className="w-4 h-4" />
-                  <span style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>{job.category}</span>
+                  <span
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
+                    {job.category}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <DollarSign className="w-4 h-4" />
-                  <span style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>{job.salary}</span>
+                  <span
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
+                    {job.salary}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <Clock className="w-4 h-4" />
-                  <span style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
-                    Posted {new Date(job.postedAt).toLocaleDateString()}
+                  <span
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
+                    Posted {new Date(job.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>
@@ -164,11 +210,17 @@ export default function JobDetailPage() {
 
             {/* Job Description */}
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+              <h2
+                className="text-xl font-semibold text-gray-900 mb-4"
+                style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+              >
                 Job Description
               </h2>
               <div className="prose prose-gray max-w-none">
-                <p className="text-gray-600 leading-relaxed" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                <p
+                  className="text-gray-600 leading-relaxed"
+                  style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                >
                   {job.description}
                 </p>
               </div>
@@ -176,14 +228,20 @@ export default function JobDetailPage() {
 
             {/* Requirements */}
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+              <h2
+                className="text-xl font-semibold text-gray-900 mb-4"
+                style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+              >
                 Requirements
               </h2>
               <ul className="space-y-3">
-                {job.requirements.map((requirement, index) => (
+                {job.requirements?.map((requirement, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-gray-600" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                    <span
+                      className="text-gray-600"
+                      style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                    >
                       {requirement}
                     </span>
                   </li>
@@ -196,7 +254,7 @@ export default function JobDetailPage() {
               <button
                 onClick={() => setShowApplicationForm(true)}
                 className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                style={{ fontFamily: "Clash Display", fontWeight: 600 }}
               >
                 Apply for this Position
               </button>
@@ -207,31 +265,46 @@ export default function JobDetailPage() {
           <div className="lg:col-span-1">
             {/* Company Info */}
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+              <h3
+                className="text-lg font-semibold text-gray-900 mb-4"
+                style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+              >
                 Company Information
               </h3>
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Company Name</p>
-                  <p className="text-gray-900" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <p
+                    className="text-gray-900"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     {job.company}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Location</p>
-                  <p className="text-gray-900" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <p
+                    className="text-gray-900"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     {job.location}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Job Type</p>
-                  <p className="text-gray-900" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <p
+                    className="text-gray-900"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     {job.type}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Category</p>
-                  <p className="text-gray-900" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <p
+                    className="text-gray-900"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     {job.category}
                   </p>
                 </div>
@@ -240,16 +313,23 @@ export default function JobDetailPage() {
 
             {/* Quick Apply */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+              <h3
+                className="text-lg font-semibold text-gray-900 mb-4"
+                style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+              >
                 Quick Apply
               </h3>
-              <p className="text-gray-600 mb-4 text-sm" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
-                Ready to apply? Click the button below to fill out the application form.
+              <p
+                className="text-gray-600 mb-4 text-sm"
+                style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+              >
+                Ready to apply? Click the button below to fill out the
+                application form.
               </p>
               <button
                 onClick={() => setShowApplicationForm(true)}
                 className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                style={{ fontFamily: "Clash Display", fontWeight: 600 }}
               >
                 Apply Now
               </button>
@@ -264,7 +344,10 @@ export default function JobDetailPage() {
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                <h2
+                  className="text-2xl font-bold text-gray-900"
+                  style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                >
                   Apply for {job.title}
                 </h2>
                 <button
@@ -277,7 +360,10 @@ export default function JobDetailPage() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <label
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     <User className="w-4 h-4 inline mr-2" />
                     Full Name
                   </label>
@@ -289,12 +375,15 @@ export default function JobDetailPage() {
                     required
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="John Doe"
-                    style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <label
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     <Mail className="w-4 h-4 inline mr-2" />
                     Email Address
                   </label>
@@ -306,12 +395,15 @@ export default function JobDetailPage() {
                     required
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="john@example.com"
-                    style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <label
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     <FileText className="w-4 h-4 inline mr-2" />
                     Resume URL
                   </label>
@@ -323,12 +415,15 @@ export default function JobDetailPage() {
                     required
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="https://example.com/resume.pdf"
-                    style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Clash Display', fontWeight: 600 }}>
+                  <label
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
+                  >
                     <MessageSquare className="w-4 h-4 inline mr-2" />
                     Cover Note
                   </label>
@@ -340,7 +435,7 @@ export default function JobDetailPage() {
                     rows={6}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Tell us why you're interested in this position..."
-                    style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
                   ></textarea>
                 </div>
 
@@ -349,7 +444,7 @@ export default function JobDetailPage() {
                     type="button"
                     onClick={() => setShowApplicationForm(false)}
                     className="flex-1 px-6 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                    style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
                   >
                     Cancel
                   </button>
@@ -357,7 +452,7 @@ export default function JobDetailPage() {
                     type="submit"
                     disabled={submitting}
                     className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    style={{ fontFamily: 'Clash Display', fontWeight: 600 }}
+                    style={{ fontFamily: "Clash Display", fontWeight: 600 }}
                   >
                     {submitting ? (
                       <>
